@@ -64,12 +64,16 @@ namespace BahaTurret
 			}
 		}
 		
-		
-	
-		public static void CreateExplosion(Vector3 position, float radius, float power, float heat, Vessel sourceVessel, Vector3 direction, string explModelPath, string soundPath)
+		public static void CreateExplosion(Vector3 position, float radius, float power, float heat, Vessel sourceVessel, Vector3 direction, string explModelPath, string soundPath, bool fireExplosionHooks)
 		{
-			GameObject go;
-			AudioClip soundClip;
+			if (fireExplosionHooks)
+            {
+                ExplosionObject explosionObj = new ExplosionObject(position, radius, power, sourceVessel, direction, explModelPath, soundPath);
+                HitManager.FireExplosionHooks(explosionObj);
+            }
+
+            GameObject go;
+            AudioClip soundClip;
 				
 			go = GameDatabase.Instance.GetModel(explModelPath);
 			soundClip = GameDatabase.Instance.GetAudioClip(soundPath);

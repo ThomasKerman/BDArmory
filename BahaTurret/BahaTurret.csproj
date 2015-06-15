@@ -130,6 +130,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BDACompetitionMode.cs" />
     <Compile Include="BDAPersistantSettingsField.cs" />
+    <Compile Include="HitManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Animation\" />
