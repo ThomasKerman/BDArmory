@@ -55,6 +55,7 @@
     <Reference Include="KSPAssets">
       <HintPath>..\..\..\Program Files\Steam\SteamApps\common\Kerbal Space Program\KSP_x64_Data\Managed\KSPAssets.dll</HintPath>
     </Reference>
+    <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CFEnable.cs" />

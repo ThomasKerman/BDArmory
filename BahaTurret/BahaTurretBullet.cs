@@ -140,9 +140,12 @@ namespace BahaTurret
 			
 			
 			currPosition = gameObject.transform.position;
+
+            HitManager.FireTracerHooks (this);
 			
 			if(distanceFromStart > maxDistance)
 			{
+                HitManager.FireTracerDestroyHooks (this);
 				GameObject.Destroy(gameObject);
 				return;
 			}
@@ -185,7 +188,7 @@ namespace BahaTurret
 					}
 
 
-					if(hitPart!=null && !hitPart.partInfo.name.Contains("Strut"))   //when a part is hit, execute damage code (ignores struts to keep those from being abused as armor)(no, because they caused weird bugs :) -BahamutoD)
+                    if(hitPart!=null && !hitPart.partInfo.name.Contains("Strut") && HitManager.ShouldAllowDamageHooks(hitPart.vessel.id))   //when a part is hit, execute damage code (ignores struts to keep those from being abused as armor)(no, because they caused weird bugs :) -BahamutoD)
 					{
 						float heatDamage = (rb.mass/hitPart.crashTolerance) * rb.velocity.magnitude * 50 * BDArmorySettings.DMG_MULTIPLIER;   //how much heat damage will be applied based on bullet mass, velocity, and part's impact tolerance
 						if(!penetrated)
@@ -255,6 +258,9 @@ namespace BahaTurret
 							Vector3 randomDirection = UnityEngine.Random.rotation * Vector3.one;
 							
 							rb.velocity = Vector3.RotateTowards(rb.velocity, randomDirection, UnityEngine.Random.Range(0f,5f)*Mathf.Deg2Rad, 0);
+
+                            //Fire HitManager hooks again
+                            HitManager.FireTracerHooks(this);
 						}
 						else
 						{
@@ -268,6 +274,7 @@ namespace BahaTurret
 								ExplosionFX.CreateExplosion(hit.point, radius, blastPower, sourceVessel, rb.velocity.normalized, explModelPath, explSoundPath, true);
 							}
 
+                            HitManager.FireTracerDestroyHooks (this);
 							GameObject.Destroy(gameObject); //destroy bullet on collision
 						}
 					}
@@ -304,7 +311,11 @@ namespace BahaTurret
 				ExplosionFX.CreateExplosion(transform.position, radius, blastPower, sourceVessel, rb.velocity.normalized, explModelPath, explSoundPath);
 =======
                 ExplosionFX.CreateExplosion(transform.position, radius, blastPower, sourceVessel, rigidbody.velocity.normalized, explModelPath, explSoundPath, true);
+<<<<<<< eb2f18bcd9dec9f8bea4ca8f37d6dda1e72653d7
 >>>>>>> Add hit manager and modify functions for plugin functionality
+=======
+                HitManager.FireTracerDestroyHooks (this);
+>>>>>>> Add damage allowed checks and hooks for tracers
 				GameObject.Destroy(gameObject); //destroy bullet on collision
 			}
 
