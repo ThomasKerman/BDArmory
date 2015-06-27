@@ -141,11 +141,11 @@ namespace BahaTurret
 			
 			currPosition = gameObject.transform.position;
 
-            HitManager.FireTracerHooks (this);
+            HitManager.FireTracerHooks (this.bulletTrail);
 			
 			if(distanceFromStart > maxDistance)
 			{
-                HitManager.FireTracerDestroyHooks (this);
+                HitManager.FireTracerDestroyHooks (this.bulletTrail);
 				GameObject.Destroy(gameObject);
 				return;
 			}
@@ -258,9 +258,6 @@ namespace BahaTurret
 							Vector3 randomDirection = UnityEngine.Random.rotation * Vector3.one;
 							
 							rb.velocity = Vector3.RotateTowards(rb.velocity, randomDirection, UnityEngine.Random.Range(0f,5f)*Mathf.Deg2Rad, 0);
-
-                            //Fire HitManager hooks again
-                            HitManager.FireTracerHooks(this);
 						}
 						else
 						{
@@ -274,7 +271,7 @@ namespace BahaTurret
 								ExplosionFX.CreateExplosion(hit.point, radius, blastPower, sourceVessel, rb.velocity.normalized, explModelPath, explSoundPath, true);
 							}
 
-                            HitManager.FireTracerDestroyHooks (this);
+                            HitManager.FireTracerDestroyHooks (this.bulletTrail);
 							GameObject.Destroy(gameObject); //destroy bullet on collision
 						}
 					}
@@ -311,11 +308,15 @@ namespace BahaTurret
 				ExplosionFX.CreateExplosion(transform.position, radius, blastPower, sourceVessel, rb.velocity.normalized, explModelPath, explSoundPath);
 =======
                 ExplosionFX.CreateExplosion(transform.position, radius, blastPower, sourceVessel, rigidbody.velocity.normalized, explModelPath, explSoundPath, true);
+<<<<<<< b24c05c003f99c0594bc928945299a00a93d3c37
 <<<<<<< eb2f18bcd9dec9f8bea4ca8f37d6dda1e72653d7
 >>>>>>> Add hit manager and modify functions for plugin functionality
 =======
                 HitManager.FireTracerDestroyHooks (this);
 >>>>>>> Add damage allowed checks and hooks for tracers
+=======
+                HitManager.FireTracerDestroyHooks (this.bulletTrail);
+>>>>>>> Add more hooks to HitManager
 				GameObject.Destroy(gameObject); //destroy bullet on collision
 			}
 
