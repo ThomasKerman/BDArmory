@@ -246,6 +246,8 @@ namespace BahaTurret
 		//muzzleflash emitters
 		List<KSPParticleEmitter> muzzleFlashEmitters;
 
+		public bool fakeLaser;
+		public bool fakeTurret;
 
 		//module references
 		[KSPField]
@@ -268,7 +270,7 @@ namespace BahaTurret
 			}
 		}
 
-		LineRenderer[] laserRenderers;
+		public LineRenderer[] laserRenderers;
 
 		//
 		float timeFired = 0;
@@ -1214,6 +1216,8 @@ namespace BahaTurret
 						//lr.SetPosition(1, lr.transform.InverseTransformPoint(laserPoint));
 						lr.SetPosition(0, tf.position+(part.rb.velocity*Time.fixedDeltaTime));
 						lr.SetPosition(1, laserPoint);
+						if (!fakeLaser)
+							HitManager.FireLaserHooks(tf.position + (part.rb.velocity * Time.fixedDeltaTime), laserPoint, vessel.id, part.craftID);
 
 
 						if(Time.time-timeFired > 6/120 && BDArmorySettings.BULLET_HITS)
@@ -1230,7 +1234,8 @@ namespace BahaTurret
 							
 							if(BDArmorySettings.INSTAKILL) p.temperature += p.maxTemp;
 
-							HitManager.FireHitHooks(p);
+                            if (!fakeLaser)
+							    HitManager.FireHitHooks(p);
 						}
 					}
 					else
@@ -1244,6 +1249,8 @@ namespace BahaTurret
 			}
 			else
 			{
+				if (!fakeLaser)
+					HitManager.FireLaserHooks(Vector3.zero, Vector3.zero, vessel.id, part.craftID);
 				return false;
 			}
 		}
@@ -1465,7 +1472,8 @@ namespace BahaTurret
 			}
 
 			weaponState = WeaponStates.Enabled;
-			HitManager.FireTurretDeployHooks(true, vessel.id, part.craftID);
+			if (!fakeTurret)
+				HitManager.FireTurretDeployHooks(true, vessel.id, part.craftID);
 			UpdateGUIWeaponState();
 			BDArmorySettings.Instance.UpdateCursorState();
 		}
@@ -1516,7 +1524,8 @@ namespace BahaTurret
 			}
 
 			weaponState = WeaponStates.Disabled;
-			HitManager.FireTurretDeployHooks(false, vessel.id, part.craftID);
+			if (!fakeTurret)
+				HitManager.FireTurretDeployHooks(false, vessel.id, part.craftID);
 			UpdateGUIWeaponState();
 		}
 

@@ -273,16 +273,18 @@ namespace BahaTurret
         public readonly Vector3 position;
         public readonly float raduis;
         public readonly float power;
+        public readonly float heat;
         public readonly Vessel sourceVessel;
         public readonly Vector3 direction;
         public readonly string explModelPath;
         public readonly string soundPath;
 
-        public ExplosionObject(Vector3 positionVal, float radiusVal, float powerVal, Vessel sourceVesselVal, Vector3 directionVal, string explModelPathVal, string soundPathVal)
+        public ExplosionObject(Vector3 positionVal, float radiusVal, float powerVal, float heatVal, Vessel sourceVesselVal, Vector3 directionVal, string explModelPathVal, string soundPathVal)
         {
             position = positionVal;
             raduis = radiusVal;
             power = powerVal;
+            heat = heatVal;
             sourceVessel = sourceVesselVal;
             direction = directionVal;
             explModelPath = explModelPathVal;

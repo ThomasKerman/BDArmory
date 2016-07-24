@@ -68,7 +68,7 @@ namespace BahaTurret
 		{
 			if (fireExplosionHooks)
 			{
-				ExplosionObject explosionObj = new ExplosionObject(position, radius, power, sourceVessel, direction, explModelPath, soundPath);
+				ExplosionObject explosionObj = new ExplosionObject(position, radius, power, heat, sourceVessel, direction, explModelPath, soundPath);
 				HitManager.FireExplosionHooks(explosionObj);
 			}
 
