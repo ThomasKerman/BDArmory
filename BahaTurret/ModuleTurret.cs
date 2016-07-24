@@ -59,6 +59,8 @@ namespace BahaTurret
 		[KSPField]
 		public float smoothMultiplier = 10;
 
+		public bool remoteControl;
+
 		float pitchTargetOffset;
 		float yawTargetOffset;
 
@@ -188,7 +190,12 @@ namespace BahaTurret
 
 		public void AimToTarget(Vector3 targetPosition, bool pitch = true, bool yaw = true)
 		{
-			if(!yawTransform)
+			if (remoteControl)
+			{
+				return;
+			}
+
+			if (!yawTransform)
 			{
 				return;
 			}
@@ -239,6 +246,9 @@ namespace BahaTurret
 
 			if(yaw) yawTransform.localRotation = Quaternion.RotateTowards(yawTransform.localRotation, Quaternion.Euler(0, targetYawAngle, 0), yawSpeed);
 			if(pitch) pitchTransform.localRotation = Quaternion.RotateTowards(pitchTransform.localRotation, Quaternion.Euler(-targetPitchAngle, 0, 0), pitchSpeed);
+
+			HitManager.FireTurretYawHook(yawTransform.localRotation, vessel.id, part.craftID);
+			HitManager.FireTurretPitchHook(pitchTransform.localRotation, vessel.id, part.craftID);
 		}
 
 		public bool ReturnTurret()
@@ -248,33 +258,39 @@ namespace BahaTurret
 				return false;
 			}
 
-			float deltaTime = Time.fixedDeltaTime;
-
-			float yawOffset = Vector3.Angle(yawTransform.forward, yawTransform.parent.forward);
-			float pitchOffset = Vector3.Angle(pitchTransform.forward, yawTransform.forward);
-
-			float yawSpeed;
-			float pitchSpeed;
-
-			if(smoothRotation)
+			if (!remoteControl)
 			{
-				yawSpeed = Mathf.Clamp(yawOffset * smoothMultiplier, 1f, yawSpeedDPS) * deltaTime;
-				pitchSpeed = Mathf.Clamp(pitchOffset * smoothMultiplier, 1f, pitchSpeedDPS) * deltaTime;
+				float deltaTime = Time.fixedDeltaTime;
+
+				float yawOffset = Vector3.Angle(yawTransform.forward, yawTransform.parent.forward);
+				float pitchOffset = Vector3.Angle(pitchTransform.forward, yawTransform.forward);
+
+				float yawSpeed;
+				float pitchSpeed;
+
+				if (smoothRotation)
+				{
+					yawSpeed = Mathf.Clamp(yawOffset * smoothMultiplier, 1f, yawSpeedDPS) * deltaTime;
+					pitchSpeed = Mathf.Clamp(pitchOffset * smoothMultiplier, 1f, pitchSpeedDPS) * deltaTime;
+				}
+				else
+				{
+					yawSpeed = yawSpeedDPS * deltaTime;
+					pitchSpeed = pitchSpeedDPS * deltaTime;
+				}
+
+				float linPitchMult = yawOffset > 0 ? Mathf.Clamp01((pitchOffset / yawOffset) * (yawSpeedDPS / pitchSpeedDPS)) : 1;
+				float linYawMult = pitchOffset > 0 ? Mathf.Clamp01((yawOffset / pitchOffset) * (pitchSpeedDPS / yawSpeedDPS)) : 1;
+
+				yawSpeed *= linYawMult;
+				pitchSpeed *= linPitchMult;
+
+				yawTransform.localRotation = Quaternion.RotateTowards(yawTransform.localRotation, Quaternion.identity, yawSpeed);
+				pitchTransform.localRotation = Quaternion.RotateTowards(pitchTransform.localRotation, Quaternion.identity, pitchSpeed);
+
+				HitManager.FireTurretYawHook(yawTransform.localRotation, vessel.id, part.craftID);
+				HitManager.FireTurretPitchHook(pitchTransform.localRotation, vessel.id, part.craftID);
 			}
-			else
-			{
-				yawSpeed = yawSpeedDPS * deltaTime;
-				pitchSpeed = pitchSpeedDPS * deltaTime;
-			}
-
-			float linPitchMult = yawOffset > 0 ? Mathf.Clamp01((pitchOffset / yawOffset) * (yawSpeedDPS/pitchSpeedDPS)) : 1;
-			float linYawMult = pitchOffset > 0 ? Mathf.Clamp01((yawOffset / pitchOffset) * (pitchSpeedDPS/yawSpeedDPS)) : 1;
-
-			yawSpeed *= linYawMult;
-			pitchSpeed *= linPitchMult;
-
-			yawTransform.localRotation = Quaternion.RotateTowards(yawTransform.localRotation, Quaternion.identity, yawSpeed);
-			pitchTransform.localRotation = Quaternion.RotateTowards(pitchTransform.localRotation, Quaternion.identity, pitchSpeed);
 
 			if(yawTransform.localRotation == Quaternion.identity && pitchTransform.localRotation == Quaternion.identity)
 			{

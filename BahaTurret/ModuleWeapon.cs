@@ -1229,6 +1229,8 @@ namespace BahaTurret
 							p.temperature += laserDamage/(1+Mathf.PI*Mathf.Pow(tanAngle*distance,2))*TimeWarp.fixedDeltaTime; 
 							
 							if(BDArmorySettings.INSTAKILL) p.temperature += p.maxTemp;
+
+							HitManager.FireHitHooks(p);
 						}
 					}
 					else
@@ -1463,6 +1465,7 @@ namespace BahaTurret
 			}
 
 			weaponState = WeaponStates.Enabled;
+			HitManager.FireTurretDeployHooks(true, vessel.id, part.craftID);
 			UpdateGUIWeaponState();
 			BDArmorySettings.Instance.UpdateCursorState();
 		}
@@ -1513,6 +1516,7 @@ namespace BahaTurret
 			}
 
 			weaponState = WeaponStates.Disabled;
+			HitManager.FireTurretDeployHooks(false, vessel.id, part.craftID);
 			UpdateGUIWeaponState();
 		}
 

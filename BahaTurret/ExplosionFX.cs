@@ -146,7 +146,8 @@ namespace BahaTurret
 						float excessHeat = Mathf.Max(0, (float)(part.temperature + heatDamage - part.maxTemp));
 						part.temperature += heatDamage;
 						if(BDArmorySettings.DRAW_DEBUG_LABELS) Debug.Log("====== Explosion ray hit part! Damage: " + heatDamage);
-						if(excessHeat > 0 && part.parent)
+						hitParts.Add(part);
+						if (excessHeat > 0 && part.parent)
 						{
 							part.parent.temperature += excessHeat;
 						}
@@ -169,9 +170,11 @@ namespace BahaTurret
 
 		public static List<Part> ignoreParts = new List<Part>(); 
 		public static List<DestructibleBuilding> ignoreBuildings = new List<DestructibleBuilding>();
+		private static List<Part> hitParts = new List<Part>();
 
 		public static void DoExplosionDamage(Vector3 position, float power, float heat, float maxDistance, Vessel sourceVessel)
 		{
+			hitParts.Clear();
 			if(BDArmorySettings.DRAW_DEBUG_LABELS) Debug.Log("======= Doing explosion sphere =========");
 			ignoreParts.Clear();
 			ignoreBuildings.Clear();
@@ -196,6 +199,7 @@ namespace BahaTurret
 					DoExplosionRay(new Ray(position, bldg.transform.position - position), power, heat, maxDistance, ref ignoreParts, ref ignoreBuildings);
 				}
 			}
+			HitManager.FireMultiHitHooks(hitParts);
 		}
 	}
 }
