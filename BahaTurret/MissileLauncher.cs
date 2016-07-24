@@ -2050,7 +2050,7 @@ namespace BahaTurret
 				if(part!=null) part.temperature = part.maxTemp + 100;
 				Vector3 position = transform.position;//+rigidbody.velocity*Time.fixedDeltaTime;
 				if(sourceVessel==null) sourceVessel = vessel;
-				ExplosionFX.CreateExplosion(position, blastRadius, blastPower, blastHeat, sourceVessel, transform.forward, explModelPath, explSoundPath, true); //TODO: apply separate heat damage
+				ExplosionFX.CreateExplosion(position, blastRadius, blastPower, blastHeat, sourceVessel, transform.forward, explModelPath, explSoundPath); //TODO: apply separate heat damage
 
 				foreach(var e in gaplessEmitters)
 				{

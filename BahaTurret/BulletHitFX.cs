@@ -58,12 +58,12 @@ namespace BahaTurret
 				Destroy(gameObject);	
 			}
 		}	
-		
-        public static void CreateBulletHit(Vector3 position, Vector3 normalDirection, bool ricochet, bool fireHooks)
+
+		public static void CreateBulletHit(Vector3 position, Vector3 normalDirection, bool ricochet, bool fireHooks = true)
 		{
 			GameObject go = GameDatabase.Instance.GetModel("BDArmory/Models/bulletHit/bulletHit");
 			GameObject newExplosion = (GameObject) GameObject.Instantiate(go, position, Quaternion.LookRotation(normalDirection));
-            //Debug.Log ("CreateBulletHit instantiating at position X: " + position.x + " Y: " + position.y + " Z: " + position.z);
+			//Debug.Log ("CreateBulletHit instantiating at position X: " + position.x + " Y: " + position.y + " Z: " + position.z);
 			newExplosion.SetActive(true);
 			newExplosion.AddComponent<BulletHitFX>();
 			newExplosion.GetComponent<BulletHitFX>().ricochet = ricochet;
@@ -80,11 +80,11 @@ namespace BahaTurret
 				}
 			}
 
-            if (fireHooks)
-            {
-                BulletObject bulletObj = new BulletObject (position, normalDirection, ricochet);
-                HitManager.FireBulletHooks (bulletObj);
-            }
+			if (fireHooks)
+			{
+				BulletObject bulletObj = new BulletObject (position, normalDirection, ricochet);
+				HitManager.FireBulletHooks (bulletObj);
+			}
 		}
 		
 	}
